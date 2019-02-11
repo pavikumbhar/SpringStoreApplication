@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: SpringStoreApplication
+  profiles:    active: dev
+
+    
+logging:
+  level:
+      org.springframework: INFO
+      com.pavikumbhar.javaheart: DEBUG 
+      
+        
