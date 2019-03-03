@@ -1,4 +1,4 @@
-package com.pavikumbhar.javaheart.dao;
+package com.pavikumbhar.javaheart.util;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,6 +7,6 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.CONSTRUCTOR)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface NativeResultConstructor {
+public @interface MapperConstructor {
     int index();
 }

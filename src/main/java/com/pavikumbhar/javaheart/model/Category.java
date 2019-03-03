@@ -1,9 +1,4 @@
 package com.pavikumbhar.javaheart.model;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import lombok.Getter;
-import lombok.Setter;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,12 +16,19 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 
 @Entity
 @Table(name = "category")
 @XmlRootElement
 @Getter
 @Setter
+@ToString(of = {"id", "name", "description"})
 public class Category implements Serializable{
 	
 	/**

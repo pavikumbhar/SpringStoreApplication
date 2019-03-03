@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.TypedQuery;
+
 public interface PersistanceDao {
 
 	/**
@@ -237,6 +239,28 @@ public interface PersistanceDao {
 	 * @return
 	 */
 	public  <T> List<T> getSingleColumnValueList(String queryString, Class<T> typeKey, Object... bindVariables) ;
+	
+	
+	/**
+	 * 
+	 * 
+	 * @param queryString
+	 * @param typeKey
+	 * @param bindVariables
+	 * @return
+	 */
+	public  <T> T getSingleResult(String queryString, Class<T> typeKey, Object... bindVariables) ;
+	
+	
+	/**
+	 * 
+	 * 
+	 * @param queryString
+	 * @param typeKey
+	 * @param bindVariables
+	 * @return
+	 */
+	public  <T> T getNativeSingleResult(String queryString, Class<T> typeKey, Object... bindVariables) ;
 	
 
 

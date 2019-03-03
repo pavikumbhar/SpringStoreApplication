@@ -1,6 +1,7 @@
-package com.pavikumbhar.javaheart.dao;
+package com.pavikumbhar.javaheart.util;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -8,9 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.persistence.Query;
 
-import com.pavikumbhar.javaheart.util.MapperConstructor;
 /**
  * 
  *@author pavikumbhar</br></br>
@@ -21,7 +20,7 @@ import com.pavikumbhar.javaheart.util.MapperConstructor;
  *  	<li>The result types must match the constructor arguments types</li>
     </ul>
  */
-public class JpaResultMapper extends ResultMapper {
+public class ObjectArrayMapper  {
 
     private static final Map<Class<?>, Class<?>> PRIMITIVE_TO_BOX_TYPE_MAP = new HashMap<>();
 
@@ -35,6 +34,24 @@ public class JpaResultMapper extends ResultMapper {
         PRIMITIVE_TO_BOX_TYPE_MAP.put(double.class, Double.class);
     }
 
+    @SuppressWarnings(value = "unchecked")
+    protected <T> T createInstance(Constructor<?> ctor, Object[] args) {
+        try {
+            return (T) ctor.newInstance(args);
+        } catch (IllegalArgumentException e) {
+            StringBuilder sb = new StringBuilder("no constructor taking:\n");
+            for (Object object : args) {
+                if (object != null) {
+                    sb.append("\t").append(object.getClass().getName()).append("\n");
+                }
+            }
+            throw new RuntimeException(sb.toString(), e);
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e.getCause());
+        }
+    }
     
     /**
      * Returns a list of objects 
@@ -64,7 +81,7 @@ public class JpaResultMapper extends ResultMapper {
     
     
     /**
-     * Returns a list of objects 
+     * Returns a list of clazz 
      *
      * @param rawResults
      * @param clazz
@@ -107,83 +124,7 @@ public class JpaResultMapper extends ResultMapper {
         return createInstance(ctor, rec);
     }
     
-    /**
-     * Returns on object from {@link javax.persistence.Query}
-     *
-     * @param q
-     * @param clazz
-     * @param <T>
-     * @return
-     */
-    public <T> T uniqueResult(Query q, Class<T> clazz) {
-        Object[] rec = postProcessSingleResult(q.getSingleResult());
-        Constructor<?> ctor = findConstructor(clazz, rec);
-
-        return createInstance(ctor, rec);
-    }
-    
-    
-    /**
-     * Returns a list of objects from a {@link javax.persistence.Query}
-     *
-     * @param q
-     * @param clazz
-     * @param <T>
-     * @return
-     * @throws IllegalArgumentException
-     */
-    @SuppressWarnings("unchecked")
-    public <T> List<T> list(Query q, Class<T> clazz)
-            throws IllegalArgumentException {
-        List<T> result = new ArrayList<>();
-
-        List<Object[]> list = postProcessResultList(q.getResultList());
-
-        Constructor<?> ctor = null;
-        if (list != null && !list.isEmpty()) {
-            ctor = findConstructor(clazz, list.get(0));
-        }
-        for (Object[] obj : list) {
-            result.add(createInstance(ctor, obj));
-        }
-        return result;
-    }
-    
-    /**
-     * Returns a list of objects from a {@link javax.persistence.Query}
-     *
-     * @param q
-     * @param clazz
-     * @param <T>
-     * @return
-     * @throws IllegalArgumentException
-     */
-    @SuppressWarnings("unchecked")
-    public <T> List<T> list(Query q, Class<T> clazz,int constructorIndex)throws IllegalArgumentException {
-        List<T> result = new ArrayList<>();
-
-        Constructor<?> ctor = null;
-        Optional<Constructor<?>> ctorOp = Arrays.stream(clazz.getDeclaredConstructors())
-        		.filter(con -> con.getAnnotation(MapperConstructor.class)!=null)
-		        .filter(con ->constructorIndex==con.getAnnotation(MapperConstructor.class).index())
-		        .findFirst();
-        
-        if(!ctorOp.isPresent()) {
-        	 throw new RuntimeException("No constructor annotated with  MapperConstructor and index :"+constructorIndex);
-        }
-       
-        List<Object[]> list = postProcessResultList(q.getResultList());
-
-       
-        if (list != null && !list.isEmpty()) {
-            ctor = ctorOp.get();
-        }
-        for (Object[] obj : list) {
-            result.add(createInstance(ctor, obj));
-        }
-        return result;
-    }
-
+   
    
 
 

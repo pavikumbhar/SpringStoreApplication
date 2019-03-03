@@ -353,4 +353,38 @@ public class PersistanceDaoImpl implements PersistanceDao {
 	}
 	
 	
+	/**
+	 * 
+	 * 
+	 * @param queryString
+	 * @param typeKey
+	 * @param bindVariables
+	 * @return
+	 */
+	@Override
+	public  <T> T getSingleResult(String queryString, Class<T> typeKey, Object... bindVariables) {
+		String queryFormated = String.format(queryString, bindVariables);
+		TypedQuery<T>  query = this.entityManager.createQuery(queryFormated,typeKey);
+		return query.getSingleResult();
+	}
+	
+	
+	/**
+	 * 
+	 * 
+	 * @param queryString
+	 * @param typeKey
+	 * @param bindVariables
+	 * @return
+	 */
+	@Override
+	public  <T> T getNativeSingleResult(String queryString, Class<T> typeKey, Object... bindVariables) {
+		String queryFormated = String.format(queryString, bindVariables);
+		Query  query = this.entityManager.createNativeQuery(queryFormated);
+		return (T) query.getSingleResult();
+	}
+	
+	
+	
+	
 }

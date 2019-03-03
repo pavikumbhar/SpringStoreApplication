@@ -1,3 +1,5 @@
+package com.pavikumbhar.javaheart.util;
+
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -5,7 +7,7 @@ import java.util.List;
 
 import javax.persistence.Query;
 
-public class ReFUtil {
+public class ReflectionUtil {
 	
 	/**
 	 * 
