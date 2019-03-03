@@ -2,6 +2,7 @@ package com.pavikumbhar.javaheart.dao;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public interface PersistanceDao {
 
@@ -121,6 +122,15 @@ public interface PersistanceDao {
 	 *         </pre>
 	 */
 	public <T> T getNativeSingleColumnValue(String queryString, Class<T> typeKey, Object... bindVariables);
+	
+	/**
+	 * 
+	 * @param queryString
+	 * @param typeKey
+	 * @param bindVariables
+	 * @return
+	 */
+	public <T> List<T> getNative(String queryString, Class<T> typeKey, Object... bindVariables);
 
 	/**
 	 * This method queries get Single column value and Cast the result Class typeKey
@@ -141,5 +151,93 @@ public interface PersistanceDao {
 	 *         </pre>
 	 */
 	public <T> T getSingleColumnValue(String queryString, Class<T> typeKey, Object... bindVariables);
+	
+	
+	/**
+	 *   
+     *	<b>Note:The usage is quite simple but be aware of:</b>
+	 *  <ul>
+	 *  	<li>The Constructor must have the same number of arguments as the result of the SQL query</li>
+	 *  	<li>The result types must match the constructor arguments types</li>
+	    </ul>
+	    
+	 * @see JpaResultMapper
+	 * 
+	 * @param queryString
+	 * @param typeKey
+	 * @param bindVariables
+	 * @return
+	 */
+	public <T> List<T> getNativeResultListUsingMapper(String queryString, Class<T> typeKey, Object... bindVariables);
+	
+	/**
+	 *   
+     *	<b>Note:The usage is quite simple but be aware of:</b>
+	 *  <ul>
+	 *  	<li>The Constructor must have the same number of arguments as the result of the SQL query</li>
+	 *  	<li>The result types must match the constructor arguments types</li>
+	    </ul>
+	    
+	 * @see JpaResultMapper
+	 * 
+	 * @param queryString
+	 * @param typeKey
+	 * @param queryParamValue :
+	 *  <pre>
+	 * eg.
+	 * 
+	 * {@code
+		    String queryString = "SELECT count(*) FROM Entity where columnNameOne= :columnOneParam  AND columnNameTwo= :columnOneParam ";
+	        Map<String, Object> queryParamValue = new HashMap<>();
+	        queryParamValue.put("columnOneParam", valueOne);
+	        queryParamValue.put("columnTwoParam", ValueTwo);
+	        persistanceDao.getNativeResultListUsingMapper(queryString,BigDecimal.class, queryParamValue);
+        }
+	 *  </pre>
+	 * @return
+	 */
+	public <T> List<T> getNativeResultListUsingMapper(String queryString,  Class<T> typeKey,Map<String, Object> queryParamValue) ;
+	
+	
+	/**
+	 *   
+     *	<b>Note:The usage is quite simple but be aware of:</b>
+	 *  <ul>
+	 *  	<li>The Constructor must have the same number of arguments as the result of the SQL query</li>
+	 *  	<li>The result types must match the constructor arguments types</li>
+	    </ul>
+	    
+	 * @see JpaResultMapper
+	 * 
+	 * @param queryString
+	 * @param constructorIndex
+	 * @param typeKey
+	 * @param bindVariables
+	 * @return
+	 */
+	public <T> List<T> getNativeResultListUsingMapper(String queryString,  int constructorIndex,Class<T> typeKey,Object... bindVariables) ;
+	
+	/**
+	 * 
+	 * 
+	 * @param queryString
+	 * @param typeKey
+	 * @param bindVariables
+	 * @return
+	 */
+	public  <T> List<T> getNativeSingleColumnValueList(String queryString, Class<T> typeKey, Object... bindVariables) ;
+	
+	
+	/**
+	 * 
+	 * 
+	 * @param queryString
+	 * @param typeKey
+	 * @param bindVariables
+	 * @return
+	 */
+	public  <T> List<T> getSingleColumnValueList(String queryString, Class<T> typeKey, Object... bindVariables) ;
+	
+
 
 }

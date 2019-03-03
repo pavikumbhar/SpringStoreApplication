@@ -5,6 +5,8 @@
  */
 package com.pavikumbhar.javaheart.common.dao;
 
+import static org.springframework.util.StringUtils.isEmpty;
+
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -24,8 +26,6 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.SingularAttribute;
-
-import org.springframework.util.StringUtils;
 
 /**
  *
@@ -116,7 +116,7 @@ public abstract class GenericDaoImpl<E, K extends Serializable> implements Gener
 		CriteriaQuery<Long> query = builder.createQuery(Long.class);
 		Root<E> from = query.from(entityType);
 		query.select(builder.count(from));
-		if (!StringUtils.isEmpty(search)) {
+		if (!isEmpty(search)) {
 			Predicate[] buildFilterPredicates = BuildFilterPredicates(from, search, searchProperties);
 			if (buildFilterPredicates.length > 0) {
 				query.where(builder.or(buildFilterPredicates));
@@ -213,7 +213,7 @@ public abstract class GenericDaoImpl<E, K extends Serializable> implements Gener
 		try {
 			result = (List<E>) query.getResultList();
 		} catch (NoResultException e) {
-			return null;
+			return result;
 		}
 		return result;
 	}

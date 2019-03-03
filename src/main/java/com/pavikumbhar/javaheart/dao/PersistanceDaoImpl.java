@@ -225,10 +225,131 @@ public class PersistanceDaoImpl implements PersistanceDao {
 	}
 
 	@SuppressWarnings("unchecked")
+	@Override
 	public <T> List<T> getNative(String queryString, Class<T> typeKey, Object... bindVariables) {
 		String queryFormated = String.format(queryString, bindVariables);
 		Query query = this.entityManager.createNativeQuery(queryFormated);
 		return (List<T>) query.unwrap(org.hibernate.query.NativeQuery.class).addEntity(typeKey).list();
+	}
+	
+	/**
+	 *   
+     *	<b>Note:The usage is quite simple but be aware of:</b>
+	 *  <ul>
+	 *  	<li>The Constructor must have the same number of arguments as the result of the SQL query</li>
+	 *  	<li>The result types must match the constructor arguments types</li>
+	    </ul>
+	    
+	 * @see JpaResultMapper
+	 * 
+	 * @param queryString
+	 * @param typeKey
+	 * @param bindVariables
+	 * @return
+	 */
+	@Override
+	public <T> List<T> getNativeResultListUsingMapper(String queryString, Class<T> typeKey, Object... bindVariables) {
+		String queryFormated = String.format(queryString, bindVariables);
+		Query query = this.entityManager.createNativeQuery(queryFormated);
+		JpaResultMapper jpaResultMapper = new JpaResultMapper();
+		return jpaResultMapper.list(query, typeKey);
+	}
+	
+	/**
+	 *   
+     *	<b>Note:The usage is quite simple but be aware of:</b>
+	 *  <ul>
+	 *  	<li>The Constructor must have the same number of arguments as the result of the SQL query</li>
+	 *  	<li>The result types must match the constructor arguments types</li>
+	    </ul>
+	    
+	 * @see JpaResultMapper
+	 * 
+	 * @param queryString
+	 * @param typeKey
+	 * @param queryParamValue :
+	 *  <pre>
+	 * eg.
+	 * 
+	 * {@code
+		    String queryString = "SELECT count(*) FROM Entity where columnNameOne= :columnOneParam  AND columnNameTwo= :columnOneParam ";
+	        Map<String, Object> queryParamValue = new HashMap<>();
+	        queryParamValue.put("columnOneParam", valueOne);
+	        queryParamValue.put("columnTwoParam", ValueTwo);
+	        persistanceDao.getNativeResultListUsingMapper(queryString,BigDecimal.class, queryParamValue);
+        }
+	 *  </pre>
+	 * @return
+	 */
+	@Override
+	public <T> List<T> getNativeResultListUsingMapper(String queryString,  Class<T> typeKey,Map<String, Object> queryParamValue) {
+		Query query = this.entityManager.createNativeQuery(queryString);
+		for (Map.Entry<String, Object> pair : queryParamValue.entrySet()) {
+			query.setParameter(pair.getKey(), pair.getValue());
+		}
+		JpaResultMapper jpaResultMapper = new JpaResultMapper();
+		return jpaResultMapper.list(query, typeKey);
+	}
+	
+	
+	/**
+	 *   
+     *	<b>Note:The usage is quite simple but be aware of:</b>
+	 *  <ul>
+	 *  	<li>The Constructor must have the same number of arguments as the result of the SQL query</li>
+	 *  	<li>The result types must match the constructor arguments types</li>
+	    </ul>
+	    
+	 * @see JpaResultMapper
+	 * 
+	 * @param queryString
+	 * @param constructorIndex
+	 * @param typeKey
+	 * @param bindVariables
+	 * @return
+	 */
+	@Override
+	public <T> List<T> getNativeResultListUsingMapper(String queryString,  int constructorIndex,Class<T> typeKey,Object... bindVariables) {
+		String queryFormated = String.format(queryString, bindVariables);
+		Query query = this.entityManager.createNativeQuery(queryFormated);
+		JpaResultMapper jpaResultMapper = new JpaResultMapper();
+		return jpaResultMapper.list(query, typeKey,constructorIndex);
+	}
+	
+	/**
+	 * 
+	 * 
+	 * @param queryString
+	 * @param typeKey
+	 * @param bindVariables
+	 * @return
+	 */
+	@Override
+	@SuppressWarnings("unchecked")
+	public  <T> List<T> getNativeSingleColumnValueList(String queryString, Class<T> typeKey, Object... bindVariables) {
+		List<T> entityList = new ArrayList<T>();
+		String queryFormated = String.format(queryString, bindVariables);
+		Query query = this.entityManager.createNativeQuery(queryFormated);
+		entityList = query.getResultList();
+		return entityList;
+	}
+	
+	
+	/**
+	 * 
+	 * 
+	 * @param queryString
+	 * @param typeKey
+	 * @param bindVariables
+	 * @return
+	 */
+	@Override
+	public  <T> List<T> getSingleColumnValueList(String queryString, Class<T> typeKey, Object... bindVariables) {
+		List<T> entityList = new ArrayList<T>();
+		String queryFormated = String.format(queryString, bindVariables);
+		TypedQuery<T>  query = this.entityManager.createQuery(queryFormated,typeKey);
+		entityList =query.getResultList();
+		return entityList;
 	}
 	
 	
