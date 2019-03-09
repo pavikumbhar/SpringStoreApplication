@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.pavikumbhar.javaheart.aop.LogExecutionTime;
 import com.pavikumbhar.javaheart.model.Category;
 import com.pavikumbhar.javaheart.service.CategoryService;
 import com.pavikumbhar.javaheart.service.ProductService;
@@ -30,6 +31,7 @@ public class HomeController {
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
+	@LogExecutionTime
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public ModelAndView home(Locale locale) {
 		return new ModelAndView("home", "featuredProducts",productService.getFeaturedProducts()) ;
