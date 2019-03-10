@@ -117,7 +117,7 @@ public abstract class GenericDaoImpl<E, K extends Serializable> implements Gener
 		Root<E> from = query.from(entityType);
 		query.select(builder.count(from));
 		if (!isEmpty(search)) {
-			Predicate[] buildFilterPredicates = BuildFilterPredicates(from, search, searchProperties);
+			Predicate[] buildFilterPredicates = buildFilterPredicates(from, search, searchProperties);
 			if (buildFilterPredicates.length > 0) {
 				query.where(builder.or(buildFilterPredicates));
 			}
@@ -136,7 +136,7 @@ public abstract class GenericDaoImpl<E, K extends Serializable> implements Gener
 	 * @param searchProperties
 	 * @return
 	 */
-	private Predicate[] BuildFilterPredicates(Root<E> root, String search, List<String> searchProperties) {
+	private Predicate[] buildFilterPredicates(Root<E> root, String search, List<String> searchProperties) {
 		if (search == null) {
 			return new Predicate[] {};
 		}
